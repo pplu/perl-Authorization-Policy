@@ -1,7 +1,15 @@
-package Authorization::Policy;
+package Authorization::Policy::Types;
 
 use Moose;
 use Moose::Util::TypeConstraints;
+
+use Authorization::Policy::Action;
+use Authorization::Policy::Resource;
+use Authorization::Policy::Principal;
+
+coerce 'Authorization::Policy::Principal',
+  from 'HashRef',
+  via { Authorization::Policy::Principal->from_hashref( $_ ) };
 
 coerce 'Authorization::Policy::Resource',
   from 'Str',
@@ -10,6 +18,14 @@ coerce 'Authorization::Policy::Resource',
 coerce 'Authorization::Policy::Action',
   from 'Str',
   via { Authorization::Policy::Action->new( action => $_ ) };
+
+
+subtype 'Authorization::Policy::Principal::ArrayRefOfStr',
+  as 'ArrayRef[Str]';
+
+coerce 'Authorization::Policy::Principal::ArrayRefOfStr',
+  from 'Str',
+  via { [ $_ ] };
 
 subtype 'Authorization::Policy::Statement::Effect',
   as 'Int',
@@ -38,18 +54,6 @@ coerce 'Autorization::Statement::ArrayRefOfResource',
   from 'Authorization::Policy::Resource',
   via { [ $_ ] };
 
-subtype 'Authorization::Policy::Principal::ArrayRefOfStr',
-  as 'ArrayRef[Str]';
-
-coerce 'Authorization::Policy::Principal::ArrayRefOfStr',
-  from 'Str',
-  via { return [ $_ ] };
-
-coerce 'Authorization::Policy::Principal',
-  from 'HashRef',
-  via { Authorization::Policy::Principal->from_hashref( $_ ) };
-
-
 # -------- Action coercion ----------------------------
 
 subtype 'Autorization::Statement::ArrayRefOfAction',
@@ -66,9 +70,5 @@ coerce 'Autorization::Statement::ArrayRefOfAction',
 coerce 'Autorization::Statement::ArrayRefOfResource',
   from 'Authorization::Policy::Action',
   via { [ $_ ] };
-
-use Authorization::Policy::Context;
-use Authorization::Policy::Resource;
-use Authorization::Policy::Principal;
 
 1;

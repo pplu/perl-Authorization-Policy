@@ -2,9 +2,9 @@
 
 use Test::More;
 
-use Authorization::Principal;
-use Authorization::Context;
-use Authorization::Policy;
+use Authorization::Policy::Principal;
+use Authorization::Policy::Context;
+use Authorization::Policy::Policy;
 
 use strict;
 
@@ -36,11 +36,11 @@ my $tests = [
 ];
 
 foreach my $test (@$tests) {
-  my $ctx = Authorization::Context->new( action => 'ActionX', 
+  my $ctx = Authorization::Policy::Context->new( action => 'ActionX', 
                                          resource => 'a:a:a:a:a:a', 
                                          principal => $test->{access} );
 
-  my $ppal = Authorization::Principal->from_hashref($test->{principal});
+  my $ppal = Authorization::Policy::Principal->from_hashref($test->{principal});
 
   my $s_ctx = to_str($ctx->principal);
   my $s_ppal = to_str($ppal);
@@ -51,7 +51,7 @@ foreach my $test (@$tests) {
     isnt($ppal->matches($ctx), 1, "Accessing $s_ctx against $s_ppal results in no match");
   }
 
-  my $stmt = Authorization::Policy->new( statements => resources => 'x:x:x:x:x:x', 
+  my $stmt = Authorization::Policy::Policy->new( statements => resources => 'x:x:x:x:x:x', 
                                              actions => $test->{ action }, 
                                              principal => { Principal => { AWS => 'x:x:x:x:x:x' } },
                                              effect => 'Allow'

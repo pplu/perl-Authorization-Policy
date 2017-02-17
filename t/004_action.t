@@ -4,9 +4,9 @@ use strict;
 
 use Test::More;
 
-use Authorization::Context;
-use Authorization::Resource;
-use Authorization::Action;
+use Authorization::Policy::Context;
+use Authorization::Policy::Resource;
+use Authorization::Policy::Action;
 
 my $ts = [
   { access => 'GetSomething', action => 'GetSomething', match => 1 },
@@ -17,8 +17,8 @@ my $ts = [
 ];
 
 foreach my $test (@$ts){
-  my $action = Authorization::Action->new(action => $test->{ action });
-  my $access  = Authorization::Action->new(action => $test->{ access });
+  my $action = Authorization::Policy::Action->new(action => $test->{ action });
+  my $access  = Authorization::Policy::Action->new(action => $test->{ access });
   if ($test->{ match }){
     ok($action->matches($access), "Accessing $test->{ access } against $test->{ action } results in match");
   } else {
@@ -45,11 +45,11 @@ my $tests = [
 ];
 
 foreach my $test (@$tests) {
-  my $access = Authorization::Context->new(action => $test->{ access }, 
+  my $access = Authorization::Policy::Context->new(action => $test->{ access }, 
                                            resource => 'x:x:x:x:x:x', 
                                            principal => { Principal => { AWS => 'x:x:x:x:x:x' } }, 
                                           );
-  my $action = Authorization::Statement->new(resources => 'x:x:x:x:x:x', 
+  my $action = Authorization::Policy::Statement->new(resources => 'x:x:x:x:x:x', 
                                              actions => $test->{ action }, 
                                              principal => { Principal => { AWS => 'x:x:x:x:x:x' } },
                                              effect => 'Allow'

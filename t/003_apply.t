@@ -5,9 +5,9 @@ use warnings;
 
 use Test::More;
 
-use Authorization::Context;
-use Authorization::Resource;
-use Authorization::Policy;
+use Authorization::Policy::Context;
+use Authorization::Policy::Resource;
+use Authorization::Policy::Policy;
 
 my $tests = [
   { accessing => 'xxx:service:subservice:location:user1:xxx/yyy', 
@@ -41,20 +41,20 @@ my $tests = [
 ];
 
 foreach my $test (@$tests){
-  my $ctx = Authorization::Context->new(
+  my $ctx = Authorization::Policy::Context->new(
     principal => { Principal => { AWS => 'x:x:x:x:x:x' } }, 
     resource => $test->{ accessing }, 
     action => 'GetX' );
-  my $res = Authorization::Resource->from_string( $test->{resource} );
+  my $res = Authorization::Policy::Resource->from_string( $test->{resource} );
   
   cmp_ok($res->matches($ctx->resource), 
          '==', 
          $test->{result}, 
          "Expect $test->{result} accessing $test->{ accessing } with resource string $test->{ resource }");
 
-  my $stmt = Authorization::Policy->new( 
+  my $stmt = Authorization::Policy::Policy->new( 
     statements => [ 
-      Authorization::Statement->new(
+      Authorization::Policy::Statement->new(
         resources => $test->{resource},
         actions   => 'GetX',
         effect    => 'Allow'

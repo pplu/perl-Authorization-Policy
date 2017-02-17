@@ -1,14 +1,14 @@
-package Authorization::Statement;
+package Authorization::Policy::Statement;
 
 use Moose;
 
-use Authorization::Types;
+use Authorization::Policy::Types;
 
 has sid           => (isa => 'Str|Undef', 
                       is => 'ro');
-has effect        => (isa => 'Authorization::Statement::Effect', 
+has effect        => (isa => 'Authorization::Policy::Statement::Effect', 
                       is => 'ro', required => 1, coerce => 1);
-has principal     => (isa => 'Authorization::Principal', 
+has principal     => (isa => 'Authorization::Policy::Principal', 
                       is => 'ro', coerce => 1);
 has actions       => (isa => 'Autorization::Statement::ArrayRefOfAction', 
                       is => 'ro', required => 1, coerce => 1);
@@ -18,7 +18,7 @@ has resources     => (isa => 'Autorization::Statement::ArrayRefOfResource',
                       is => 'ro', required => 1, coerce => 1);
 #has not_resources => (isa => 'Autorization::Statement::ArrayRefOfResource', 
 #                      is => 'ro', required => 1, coerce => 1);
-has conditions    => (isa => 'ArrayRef[Authorization::Statement::Condition]', 
+has conditions    => (isa => 'ArrayRef[Authorization::Policy::Statement::Condition]', 
                       is => 'ro');
 
 sub from_hashref {

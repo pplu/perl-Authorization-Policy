@@ -1,4 +1,4 @@
-package Authorization::Resource;
+package Authorization::Policy::Resource;
 
 use Moose;
 

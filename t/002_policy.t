@@ -5,34 +5,34 @@ use warnings;
 
 use Test::More;
 
-use Authorization::Policy;
-use Authorization::Statement;
-use Authorization::Context;
+use Authorization::Policy::Policy;
+use Authorization::Policy::Statement;
+use Authorization::Policy::Context;
 
 my $res = [ 'xxx:service:subservice:::' ];
 my $act = [ 'MyAction' ];
  
-my $context = Authorization::Context->new(
+my $context = Authorization::Policy::Context->new(
   principal => { Principal => { AWS => 'x:x:x:x:x:x' } }, 
   resource => $res->[0],
   action => $act->[0]  
 );
 
-my $deny = Authorization::Statement->new(
+my $deny = Authorization::Policy::Statement->new(
   sid => 'DENY',
   effect => 'Deny',
   resources => $res,
   actions => $act
 );
 
-my $allow = Authorization::Statement->new(
+my $allow = Authorization::Policy::Statement->new(
   sid => 'ALLOW',
   effect => 'Allow',
   resources => $res,
   actions => $act
 );
 
-my $na = Authorization::Statement->new(
+my $na = Authorization::Policy::Statement->new(
   sid => 'NA',
   effect => 'Allow',
   resources => [ 'yyy:service::subservice:::' ],
@@ -63,7 +63,7 @@ my $tests = [
 ];
 
 foreach my $test (@$tests){
-  my $statement = Authorization::Policy->new( statements => $test->{statements} );
+  my $statement = Authorization::Policy::Policy->new( statements => $test->{statements} );
   cmp_ok($statement->evaluate($context), 
          '==', 
          ($test->{result} eq 'Allow' ? 1 : 0), 

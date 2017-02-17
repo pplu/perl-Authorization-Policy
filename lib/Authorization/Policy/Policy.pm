@@ -1,17 +1,17 @@
-package Authorization::Policy;
+package Authorization::Policy::Policy;
 
 use Moose;
 
-use Authorization::Statement;
+use Authorization::Policy::Statement;
 
-has statements => (isa => 'ArrayRef[Authorization::Statement]', is => 'rw');
+has statements => (isa => 'ArrayRef[Authorization::Policy::Statement]', is => 'rw');
 has message => (isa => 'Str', is => 'ro');
 
 sub from_hashref {
   my ($class, $hashref) = @_;
   my $statements = [];
 
-  push @$statements, Authorization::Statement->from_hashref($_) foreach (@{$hashref->{Statement}});
+  push @$statements, Authorization::Policy::Statement->from_hashref($_) foreach (@{$hashref->{Statement}});
   return $class->new(statements => $statements);
 }
 

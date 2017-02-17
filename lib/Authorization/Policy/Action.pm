@@ -1,4 +1,4 @@
-package Authorization::Action;
+package Authorization::Policy::Action;
 
 use Moose;
 
