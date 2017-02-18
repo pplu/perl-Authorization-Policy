@@ -5,8 +5,8 @@ use strict;
 use Test::More;
 
 use Authorization::Policy::Context;
-use Authorization::Policy::Resource;
 use Authorization::Policy::Action;
+use Authorization::Policy::Policy;
 
 my $ts = [
   { access => 'GetSomething', action => 'GetSomething', match => 1 },
@@ -49,11 +49,15 @@ foreach my $test (@$tests) {
                                            resource => 'x:x:x:x:x:x', 
                                            principal => { Principal => { AWS => 'x:x:x:x:x:x' } }, 
                                           );
-  my $action = Authorization::Policy::Statement->new(resources => 'x:x:x:x:x:x', 
-                                             actions => $test->{ action }, 
-                                             principal => { Principal => { AWS => 'x:x:x:x:x:x' } },
-                                             effect => 'Allow'
-                                            );
+  my $action = Authorization::Policy::Policy->new(
+                                           statements => [
+                                             Authorization::Policy::Statement->new(
+                                               resources => 'x:x:x:x:x:x', 
+                                               actions => $test->{ action }, 
+                                               effect => 'Allow'
+                                             )
+                                           ]
+                                         );
   my $str;
   if (ref($test->{action}) eq 'ARRAY'){
     $str = join ',', @{ $test->{ action } };
