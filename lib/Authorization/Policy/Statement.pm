@@ -2,6 +2,10 @@ package Authorization::Policy::Statement;
 
 use Moose;
 
+use Authorization::Policy::Action;
+use Authorization::Policy::Resource;
+use Authorization::Policy::Principal;
+
 use Authorization::Policy::Types;
 
 has sid           => (isa => 'Str|Undef', 
@@ -26,7 +30,7 @@ sub from_hashref {
   
   return $class->new(sid => $h->{Sid},
                      effect => $h->{Effect},
-                     principals => $h->{Principal},
+                     principal => $h->{Principal},
                      #not_principals => $h->{NotPrincipal},
                      resources => $h->{Resource},
                      #not_resources => $h->{NotResource},
@@ -38,9 +42,10 @@ sub from_hashref {
 sub evaluate {
   my ($self, $context) = @_;
 
+  return undef if (defined $self->principal and not $self->principal->matches($context));
   return undef unless (grep { $_->matches($context->resource) } @{ $self->resources });
   return undef unless (grep { $_->matches($context->action) } @{ $self->actions });
-  die "Cannot evaluate principals yet" if (defined $self->principal);
+  #return undef unless (defined $self->principal and $self->principal->matches($context));
   die "Cannot evaluate conditions yet" if (defined $self->conditions);
 
   #TODO: evaluate not_resources

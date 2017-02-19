@@ -4,9 +4,9 @@ use strict;
 
 use Test::More;
 
+use Authorization::Policy::Policy;
 use Authorization::Policy::Context;
 use Authorization::Policy::Action;
-use Authorization::Policy::Policy;
 
 my $ts = [
   { access => 'GetSomething', action => 'GetSomething', match => 1 },

@@ -37,7 +37,7 @@ my $tests = [
 
 foreach my $test (@$tests) {
   my $ctx = Authorization::Policy::Context->new( action => 'ActionX', 
-                                         resource => 'a:a:a:a:a:a', 
+                                         resource => 'x:x:x:x:x:x', 
                                          principal => $test->{access} );
 
   my $ppal = Authorization::Policy::Principal->from_hashref($test->{principal});
@@ -50,14 +50,29 @@ foreach my $test (@$tests) {
   } else {
     isnt($ppal->matches($ctx), 1, "Accessing $s_ctx against $s_ppal results in no match");
   }
+}
 
-  my $stmt = Authorization::Policy::Policy->new( statements => resources => 'x:x:x:x:x:x', 
-                                             actions => $test->{ action }, 
-                                             principal => { Principal => { AWS => 'x:x:x:x:x:x' } },
-                                             effect => 'Allow'
-                                            );
+foreach my $test (@$tests) {
+  my $stmt = Authorization::Policy::Policy->new( statements => [
+                                                   Authorization::Policy::Statement->new(
+                                                     resources => 'x:x:x:x:x:x', 
+                                                     actions => 'ActionX', 
+                                                     principal => $test->{ principal },
+                                                     effect => 'Allow'
+                                                   )
+                                                 ]
+                                               );
+  my $ctx = Authorization::Policy::Context->new(
+                                             action => 'ActionX',
+                                             resource => 'x:x:x:x:x:x',
+                                             principal => $test->{ access });
+  my $s_ctx = to_str($ctx->principal);
+  my $s_ppal = to_str($stmt->statements->[0]->principal);
 
-
+  cmp_ok($stmt->evaluate($ctx),
+         '==', 
+         $test->{match}, 
+         "Expect $test->{result} accessing $s_ctx with policy for $s_ppal"); 
 }
 
 sub to_str {

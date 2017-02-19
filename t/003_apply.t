@@ -5,9 +5,9 @@ use warnings;
 
 use Test::More;
 
+use Authorization::Policy::Policy;
 use Authorization::Policy::Context;
 use Authorization::Policy::Resource;
-use Authorization::Policy::Policy;
 
 my $tests = [
   { accessing => 'xxx:service:subservice:location:user1:xxx/yyy', 
@@ -55,6 +55,7 @@ foreach my $test (@$tests){
   my $stmt = Authorization::Policy::Policy->new( 
     statements => [ 
       Authorization::Policy::Statement->new(
+        principal => { Principal => { AWS => 'x:x:x:x:x:x' } }, 
         resources => $test->{resource},
         actions   => 'GetX',
         effect    => 'Allow'
