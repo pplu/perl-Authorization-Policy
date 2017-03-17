@@ -30,7 +30,7 @@ sub from_hashref {
   
   return $class->new(sid => $h->{Sid},
                      effect => $h->{Effect},
-                     principal => $h->{Principal},
+                     (defined $h->{Principal})?(principal => $h->{Principal}):(),
                      #not_principals => $h->{NotPrincipal},
                      resources => $h->{Resource},
                      #not_resources => $h->{NotResource},
