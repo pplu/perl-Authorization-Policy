@@ -75,6 +75,32 @@ foreach my $test (@$tests) {
          "Expect $test->{result} accessing $s_ctx with policy for $s_ppal"); 
 }
 
+
+{
+  my $stmt = Authorization::Policy::Policy->new( statements => [
+                                                   Authorization::Policy::Statement->new(
+                                                     resources => 'x:x:x:x:x:x', 
+                                                     actions => 'ActionX', 
+                                                     effect => 'Allow'
+                                                   )
+                                                 ]
+                                               );
+  my $ctx = Authorization::Policy::Context->new(
+                                             action => 'ActionX',
+                                             resource => 'x:x:x:x:x:x',
+                                             principal => { Principal => { 'SVC' => 'user' } });
+
+  cmp_ok($stmt->evaluate($ctx),
+         '==', 
+         1, 
+         "Pass a policy with no principal");
+}
+
+
+
+
+
+
 sub to_str {
   my $a = shift;
   return sprintf "{ Principal: '%s': [ '%s' ] }", $a->namespace, (join "','", @{ $a->accounts });
