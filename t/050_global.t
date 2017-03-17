@@ -29,9 +29,9 @@ my $policy = <<EOF;
 }
 EOF
 
-use JSON;
+use JSON::MaybeXS;
 
-my $hr = from_json($policy);
+my $hr = decode_json($policy);
 
 my $stat = Authorization::Policy::Policy->from_hashref($hr);
 
