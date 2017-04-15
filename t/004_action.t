@@ -34,6 +34,7 @@ my $tests = [
   { access => 'GetSomething', action => 'PutSomething', match => 0 },
   { access => 'GetSomething', action => 'Put*', match => 0 },
   { access => 'PutX'        , action => 'Put*', match => 1 },
+  { access => 'PutX'        , action => 'PutX*', match => 1 },
   { access => 'GetSomething', action => '*', match => 1 },
   { access => 'PutSomething', action => '*', match => 1 },
   { access => 'GetSomething', action => [ 'Put*', 'GetSomething' ], match => 1 },
